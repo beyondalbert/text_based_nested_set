@@ -1,0 +1,7 @@
+mysql:
+  adapter: 'mysql2'
+  host: localhost
+  encoding: utf8
+  database: tb_nested_set_gem_test
+  username: root
+  password: "albert"
