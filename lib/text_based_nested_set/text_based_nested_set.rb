@@ -1,8 +1,8 @@
 require 'text_based_nested_set/model'
 
 module BeyondAlbert #:nodoc:
-	module Acts #:nodoc:
-		module TextBasedNestedSet #:nodoc:
+  module Acts #:nodoc:
+    module TextBasedNestedSet #:nodoc:
 
       # this acts provides Text Based Nested Set functionality.
       # Text Based Nested Set is another way to implementation of an SQL Nested Set created by Trever Shick.
@@ -22,11 +22,11 @@ module BeyondAlbert #:nodoc:
       # See BeyondAlbert::Acts::TextBasedNestedSet::Model 
       # for a list ofclass methods and instance methods 
       # added to acts_as_text_based_nested_set models.
-			def acts_as_text_based_nested_set(options = {})
-				include Model
+      def acts_as_text_based_nested_set(options = {})
+        include Model
 
         before_destroy :destroy_descendants
-			end
-		end
-	end
+      end
+    end
+  end
 end
