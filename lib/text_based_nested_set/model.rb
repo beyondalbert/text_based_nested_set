@@ -127,7 +127,11 @@ module BeyondAlbert
         end
 
         def parent
-          current_class.find(self.parent_id)
+          if self.root?
+            nil
+          else
+            current_class.find(self.parent_id)
+          end
         end
 
         def ancestors
@@ -137,12 +141,30 @@ module BeyondAlbert
 
         def children
           children_path = self.path + self.id.to_s + '/'
-          current_class.where(path: children_path)
+          current_class.where(path: children_path).order('position')
         end
 
         def descendants
           descendants_path = self.path + self.id.to_s + '/%'
           current_class.where("path LIKE ?", descendants_path)
+        end
+
+        def right_sibling
+          right_siblings = current_class.where(path: self.path, position: self.position + 1)
+          if right_siblings.empty?
+            nil
+          else
+            right_siblings.first
+          end
+        end
+
+        def left_sibling
+          left_siblings = current_class.where(path: self.path, position: self.position - 1 )
+          if left_siblings.empty?
+            nil
+          else
+            left_siblings.first
+          end
         end
 
         def siblings

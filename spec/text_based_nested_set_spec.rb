@@ -88,6 +88,10 @@ describe 'TextBasedNestedSet' do
 		it "should return current node's parent node" do
 			expect(@child_1_1.parent.name).to eq("child_1")
 		end
+
+    it "should return nil when current node is root node" do
+      expect(@root.parent).to eq(nil)
+    end
 	end
 
 	describe 'ancestors' do
@@ -108,6 +112,26 @@ describe 'TextBasedNestedSet' do
 			expect(@root.descendants).to eq([@child_1, @child_2, @child_1_1, @child_1_2, @child_1_3, @child_1_1_1, @child_1_2_1])
 		end
 	end
+
+  describe 'right_sibling' do
+    it "should return current node's right sibling" do
+      expect(@child_1_2.right_sibling).to eq(@child_1_3)
+    end
+
+    it "should return nil when current node's right sibling is not existed" do
+      expect(@child_1_3.right_sibling).to eq(nil)
+    end
+  end
+
+  describe 'left_sibling' do
+    it "should return current node's left sibling" do
+      expect(@child_1_2.left_sibling).to eq(@child_1_1)
+    end
+
+    it "should return nil when current node's left sibling is not existed" do
+      expect(@child_1_1.left_sibling).to eq(nil)
+    end
+  end
 
 	describe 'root?' do
 		it "should return true if current node is root node" do
