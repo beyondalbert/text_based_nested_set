@@ -100,6 +100,12 @@ describe 'TextBasedNestedSet' do
     end
   end
 
+  describe 'self_and_ancestors' do
+    it "should return current node's ancestors node include self" do
+      expect(@child_1_1.self_and_ancestors).to eq([@root, @child_1, @child_1_1])
+    end
+  end
+
   describe 'children' do
     it "should return current node's children node" do
       expect(@child_1.children).to eq([@child_1_1, @child_1_2, @child_1_3])

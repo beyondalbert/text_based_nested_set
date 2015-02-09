@@ -139,6 +139,11 @@ module BeyondAlbert
           current_class.where(id: parent_ids)
         end
 
+        def self_and_ancestors
+          parent_ids = self.path.split('/').select {|v| v != "" && v != "0"} << self.id
+          current_class.where(id: parent_ids)
+        end
+
         def children
           children_path = self.path + self.id.to_s + '/'
           current_class.where(path: children_path).order('position')
