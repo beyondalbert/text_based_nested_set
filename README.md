@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/beyondalbert/text_based_nested_set.png?branch=master)](https://travis-ci.org/beyondalbert/text_based_nested_set)
+
 # TextBasedNestedSet
 
 this acts provides Text Based Nested Set functionality.
