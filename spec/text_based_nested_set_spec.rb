@@ -7,18 +7,18 @@ describe 'TextBasedNestedSet' do
     #  |__child_1(2)
     #  |     |__child_1_1(4)
     #  |     |     |__child_1_1_1(7)
-    #  |     |__child_1_2(5)
-    #  |     |     |__child_1_2_1(8)
-    #  |     |__child_1_3(6)
-    #  |__child_2(3) 
+    #  |     |__child_1_2(6)
+    #  |     |     |__child_1_2_1(3)
+    #  |     |__child_1_3(5)
+    #  |__child_2(8) 
     @root = create(:category, id: 1, parent_id: 0, path: "/0/", position: 0)
     @child_1 = create(:category, id: 2, name: "child_1", parent_id: 1, path: "/0/1/", position: 0)
-    @child_2 = create(:category, id: 3, name: "child_2", parent_id: 1, path: "/0/1/", position: 1)
-    @child_1_1 = create(:category, id: 4, name: "child_1_1", parent_id: 2, path: "/0/1/2/", position: 0)
-    @child_1_2 = create(:category, id: 5, name: "child_1_2", parent_id: 2, path: "/0/1/2/", position: 1)
-    @child_1_3 = create(:category, id: 6, name: "child_1_3", parent_id: 2, path: "/0/1/2/", position: 2)
+    @child_2 = create(:category, id: 8, name: "child_2", parent_id: 1, path: "/0/1/", position: 1)
+    @child_1_1 = create(:category, id: 4, name: "child_1_1", parent_id: 2, path: "/0/1/2/", position: 0)    
+    @child_1_2 = create(:category, id: 6, name: "child_1_2", parent_id: 2, path: "/0/1/2/", position: 1)
+    @child_1_3 = create(:category, id: 5, name: "child_1_3", parent_id: 2, path: "/0/1/2/", position: 2)
     @child_1_1_1 = create(:category, id: 7, name: "child_1_1_1", parent_id: 4, path: "/0/1/2/4/", position: 0)	
-    @child_1_2_1 = create(:category, id: 8, name: "child_1_2_1", parent_id: 5, path: "/0/1/2/5/", position: 0)
+    @child_1_2_1 = create(:category, id: 3, name: "child_1_2_1", parent_id: 6, path: "/0/1/2/6/", position: 0)
   end
 
   describe 'move_to_root' do
@@ -33,7 +33,7 @@ describe 'TextBasedNestedSet' do
       expect(@child_1_2.position).to eq(0)
       expect(@child_1_1.position).to eq(0)
       expect(@child_1_3.position).to eq(1)
-      expect(@child_1_2_1.path).to eq("/0/5/")
+      expect(@child_1_2_1.path).to eq("/0/6/")
       expect(@child_1.descendants).to eq([@child_1_1, @child_1_3, @child_1_1_1])
     end
   end
@@ -50,7 +50,7 @@ describe 'TextBasedNestedSet' do
       expect(@child_1_2.position).to eq(1)
       expect(@child_2.position).to eq(2)
       expect(@child_1_3.position).to eq(1)
-      expect(@child_1_2_1.path).to eq('/0/1/5/')
+      expect(@child_1_2_1.path).to eq('/0/1/6/')
     end
   end
 
@@ -80,7 +80,7 @@ describe 'TextBasedNestedSet' do
       expect(@child_1_2.path).to eq('/0/1/2/4/')
       expect(@child_1_2.position).to eq(1)
       expect(@child_1_3.position).to eq(1)
-      expect(@child_1_2_1.path).to eq('/0/1/2/4/5/')
+      expect(@child_1_2_1.path).to eq('/0/1/2/4/6/')
     end
   end
 
@@ -114,8 +114,8 @@ describe 'TextBasedNestedSet' do
 
   describe 'descendants' do
     it "should return current node's all descendants" do
-      expect(@child_1.descendants).to eq([@child_1_1, @child_1_2, @child_1_3, @child_1_1_1, @child_1_2_1])
-      expect(@root.descendants).to eq([@child_1, @child_2, @child_1_1, @child_1_2, @child_1_3, @child_1_1_1, @child_1_2_1])
+      expect(@child_1.descendants).to eq([@child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
+      expect(@root.descendants).to eq([@child_1, @child_2, @child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
     end
   end
 
@@ -194,7 +194,7 @@ describe 'TextBasedNestedSet' do
     it 'should destroy descendants when itself be destroyed' do
       @child_1.destroy
       expect(Category.find_by_id(4)).to eq(nil)
-      expect(Category.find_by_id(3).name).to eq('child_2')
+      expect(Category.find_by_id(8).name).to eq('child_2')
     end
   end
 

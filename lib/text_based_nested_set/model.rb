@@ -151,7 +151,7 @@ module BeyondAlbert
 
         def descendants
           descendants_path = self.path + self.id.to_s + '/%'
-          current_class.where("path LIKE ?", descendants_path)
+          current_class.where("path LIKE ?", descendants_path).order("LENGTH(path) ASC, position ASC")
         end
 
         def right_sibling
