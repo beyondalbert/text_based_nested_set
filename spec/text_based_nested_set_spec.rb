@@ -119,6 +119,13 @@ describe 'TextBasedNestedSet' do
     end
   end
 
+  describe 'self_and_descendants' do
+    it "should return current node and it's all descendants" do
+      expect(@child_1.self_and_descendants).to eq([@child_1, @child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
+      expect(@root.self_and_descendants).to eq([@root, @child_1, @child_2, @child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
+    end
+  end
+
   describe 'right_sibling' do
     it "should return current node's right sibling" do
       expect(@child_1_2.right_sibling).to eq(@child_1_3)
