@@ -15,6 +15,16 @@ module BeyondAlbert
               r.rebuild
             end
           end
+
+          def position_valid?
+            root_nodes = where(parent_id: 0)
+            root_nodes.each do |r|
+              unless r.check_position
+                return false
+              end
+            end
+            true
+          end
         end
 
         def move_to_root
@@ -136,7 +146,7 @@ module BeyondAlbert
 
         def ancestors
           parent_ids = self.path.split('/').select {|v| v != "" && v != "0"}
-          current_class.where(id: parent_ids)
+          current_class.where(id: parent_ids).order("LENGTH(path) ASC")
         end
 
         def self_and_ancestors
@@ -202,9 +212,25 @@ module BeyondAlbert
           end
         end
 
+        def check_position
+          logger = Logger.new(STDOUT)
+          if self.children.size != 0
+            if self.children.size == self.children.last.position + 1
+              self.children.each do |c|
+                c.check_position
+              end
+            else
+              logger.info("position not correct, node id: #{self.id}")
+              return false
+            end
+          end
+          return true
+        end
+
         private
 
         def in_tenacious_transaction(&block)
+          logger = Logger.new(STDOUT)
           retry_count = 0
           begin
             transaction(&block)

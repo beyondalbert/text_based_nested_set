@@ -21,7 +21,7 @@ describe 'TextBasedNestedSet' do
     @child_1_2_1 = create(:category, id: 3, name: "child_1_2_1", parent_id: 6, path: "/0/1/2/6/", position: 0)
   end
 
-  describe 'move_to_root' do
+  describe '#move_to_root' do
     it 'should move to the root of the tree' do
       @child_1_2.move_to_root
       @child_1_2.reload
@@ -38,7 +38,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'move_to_left_of' do
+  describe '#move_to_left_of' do
     it 'should move to the left of target node' do
       @child_1_2.move_to_left_of(@child_2)
 
@@ -54,7 +54,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'move_to_right_of' do
+  describe '#move_to_right_of' do
     it 'should move to the right of target node' do
       @child_1_1.move_to_right_of(@child_1)
 
@@ -70,7 +70,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'move_to_child_of' do
+  describe '#move_to_child_of' do
     it 'should move to the child of target node' do
       @child_1_2.move_to_child_of(@child_1_1)
 
@@ -84,7 +84,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'parent' do
+  describe '#parent' do
     it "should return current node's parent node" do
       expect(@child_1_1.parent.name).to eq("child_1")
     end
@@ -94,39 +94,39 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'ancestors' do
+  describe '#ancestors' do
     it "should return current node's ancestors node" do
       expect(@child_1_1.ancestors).to eq([@root, @child_1])
     end
   end
 
-  describe 'self_and_ancestors' do
+  describe '#self_and_ancestors' do
     it "should return current node's ancestors node include self" do
       expect(@child_1_1.self_and_ancestors).to eq([@root, @child_1, @child_1_1])
     end
   end
 
-  describe 'children' do
+  describe '#children' do
     it "should return current node's children node" do
       expect(@child_1.children).to eq([@child_1_1, @child_1_2, @child_1_3])
     end
   end
 
-  describe 'descendants' do
+  describe '#descendants' do
     it "should return current node's all descendants" do
       expect(@child_1.descendants).to eq([@child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
       expect(@root.descendants).to eq([@child_1, @child_2, @child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
     end
   end
 
-  describe 'self_and_descendants' do
+  describe '#self_and_descendants' do
     it "should return current node and it's all descendants" do
       expect(@child_1.self_and_descendants).to eq([@child_1, @child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
       expect(@root.self_and_descendants).to eq([@root, @child_1, @child_2, @child_1_1, @child_1_2, @child_1_3, @child_1_2_1, @child_1_1_1])
     end
   end
 
-  describe 'right_sibling' do
+  describe '#right_sibling' do
     it "should return current node's right sibling" do
       expect(@child_1_2.right_sibling).to eq(@child_1_3)
     end
@@ -136,7 +136,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'left_sibling' do
+  describe '#left_sibling' do
     it "should return current node's left sibling" do
       expect(@child_1_2.left_sibling).to eq(@child_1_1)
     end
@@ -146,7 +146,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'root?' do
+  describe '#root?' do
     it "should return true if current node is root node" do
       expect(@root.root?).to eq(true)
     end
@@ -165,7 +165,7 @@ describe 'TextBasedNestedSet' do
     end
   end
 
-  describe 'rebuild' do
+  describe '#rebuild' do
     it "should rebuild current node's all descendants, set path and position again " do
       @root.descendants.each do |d|
         d.update(path: nil, position: nil)
@@ -197,6 +197,30 @@ describe 'TextBasedNestedSet' do
     end
   end
 
+  describe 'position_valid?' do
+    it "should return true if all records' position in table is right" do
+      expect(Category.position_valid?).to eq(true)
+    end
+
+    it "should return false if some records' position in table is out of order" do
+      @child_2.position = 0
+      @child_2.save!
+      expect(Category.position_valid?).to eq(false)
+    end
+  end
+
+  describe '#check_position' do
+    it "should return true if current tree's children's position is right" do     
+      expect(@child_1.check_position).to eq(true)
+    end
+
+    it "should return false if current tree's children's position is out of order" do
+      @child_1_3.position = 4
+      @child_1_3.save!
+      expect(@child_1.check_position).to eq(false)
+    end
+  end
+
   describe 'private destroy_descendants' do
     it 'should destroy descendants when itself be destroyed' do
       @child_1.destroy
@@ -206,7 +230,7 @@ describe 'TextBasedNestedSet' do
   end
 
   describe 'default value test' do
-    it 'should create a root node' do
+    it 'should create a root node with default value: parent_id: 0, path: "/0/", position: 0' do
       root1 = create(:category, name: 'root1')
       expect(root1.parent_id).to eq(0)
       expect(root1.path).to eq('/0/')
